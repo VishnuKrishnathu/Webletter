@@ -42,7 +42,7 @@ jobs:
     #     pip install -r requirements.txt
 
     - name: Checking tree
-      run: tree
+      run: tree -a
 
     # - uses: akhileshns/heroku-deploy@v3.12.12
     #   with:
