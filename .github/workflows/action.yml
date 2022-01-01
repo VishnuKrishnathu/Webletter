@@ -24,9 +24,11 @@ jobs:
 
     - name: Setting up environment variables
       run: |
+        touch .env
+        touch webletter/.env
         echo "MONGO_USERNAME= $MONGO_USERNAME
         MONGO_PASSWORD= $MONGO_PASSWORD
-        MONGO_DATABASE= $MONGO_DATABASE" > .env &&
+        MONGO_DATABASE= $MONGO_DATABASE" > .env
         echo "SECRET_KEY= $SECRET_KEY" > webletter/.env
       env:
         MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
