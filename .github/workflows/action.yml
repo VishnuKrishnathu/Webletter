@@ -26,18 +26,18 @@ jobs:
       run: |
         echo "MONGO_USERNAME= $MONGO_USERNAME
         MONGO_PASSWORD= $MONGO_PASSWORD
-        MONGO_DATABASE= $MONGO_DATABASE" > .env 
-      run: echo "SECRET_KEY= $SECRET_KEY" > webletter/.env
+        MONGO_DATABASE= $MONGO_DATABASE" > .env &&
+        echo "SECRET_KEY= $SECRET_KEY" > webletter/.env
       env:
         MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
         MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
         MONGO_DATABASE: ${{ secrets.MONGO_DATABASE }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+    # - name: Install Dependencies
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install -r requirements.txt
 
     - name: Checking tree
       run: tree
