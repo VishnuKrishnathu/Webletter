@@ -29,7 +29,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG') == 'True'
+# enforce_schema = True
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -82,16 +83,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'webletter.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+
+# Mongodb database connect
+URI_STRING = 'mongodb+srv://{username}:{password}@cluster0.ragko.mongodb.net/{database}?retryWrites=true&w=majority'.format(username = env('MONGO_USERNAME'), password = env('MONGO_PASSWORD'), database = env('MONGO_DATABASE'))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        # 'NAME': 'webletter',
+        'ENFORCE-SCHEMA' : True,
+        'CLIENT' : {
+            'host' : URI_STRING
+        }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
