@@ -27,6 +27,7 @@ jobs:
         touch webletter/.env
         echo "MONGO_USERNAME= $MONGO_USERNAME
         MONGO_PASSWORD= $MONGO_PASSWORD
+        DEBUG=False
         SECRET_KEY= $SECRET_KEY
         MONGO_DATABASE= $MONGO_DATABASE" > webletter/.env
       env:
