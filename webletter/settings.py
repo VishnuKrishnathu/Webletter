@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ   # importing django-environ to read env files
 
+
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
@@ -30,6 +31,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG') == 'True'
+
+print(f"Debugging is {DEBUG}")
 # enforce_schema = True
 
 ALLOWED_HOSTS = [
@@ -48,7 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
-    'rest_framework',
+    'authentication_app.apps.AuthenticationAppConfig',
+    'rest_framework'
 ]
 
 
@@ -85,18 +89,29 @@ WSGI_APPLICATION = 'webletter.wsgi.application'
 
 
 # Mongodb database connect
-URI_STRING = 'mongodb+srv://{username}:{password}@cluster0.ragko.mongodb.net/{database}?retryWrites=true&w=majority'.format(username = env('MONGO_USERNAME'), password = env('MONGO_PASSWORD'), database = env('MONGO_DATABASE'))
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        # 'NAME': 'webletter',
-        'ENFORCE-SCHEMA' : True,
-        'CLIENT' : {
-            'host' : URI_STRING
+if DEBUG :
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': env('POSTGRES_DATABASE'),
+            'USER' : env('POSTGRES_NAME'),
+            'PASSWORD' : env('POSTGRES_PASSWORD'),
+            'HOST': env('POSTGRES_HOST'),
+            'PORT' : env('POSTGRES_PORT')
         }
     }
-}
+
+else :
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': env('POSTGRES_DATABASE'),
+            'USER' : env('POSTGRES_NAME'),
+            'PASSWORD' : env('POSTGRES_PASSWORD'),
+            'HOST': env('POSTGRES_HOST'),
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -114,6 +129,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
 
