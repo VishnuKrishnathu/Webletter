@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
-    'rest_framework',
+    'authentication_app.apps.AuthenticationAppConfig',
+    # 'authentication_app',
+    'rest_framework'
 ]
 
 
@@ -85,18 +87,22 @@ WSGI_APPLICATION = 'webletter.wsgi.application'
 
 
 # Mongodb database connect
-URI_STRING = 'mongodb+srv://{username}:{password}@cluster0.ragko.mongodb.net/{database}?retryWrites=true&w=majority'.format(username = env('MONGO_USERNAME'), password = env('MONGO_PASSWORD'), database = env('MONGO_DATABASE'))
-
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        # 'NAME': 'webletter',
-        'ENFORCE-SCHEMA' : True,
-        'CLIENT' : {
-            'host' : URI_STRING
-        }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DATABASE'),
+        'USER' : env('POSTGRES_NAME'),
+        'PASSWORD' : env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT' : env('POSTGRES_PORT')
+
+        # 'OPTIONS': {
+        #     'service': 'webletter',
+        #     'passfile': '.my_pgpass',
+        # },
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -114,6 +120,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
 
