@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ   # importing django-environ to read env files
 
+
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
@@ -30,6 +31,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG') == 'True'
+
+print(f"Debugging is {DEBUG}")
 # enforce_schema = True
 
 ALLOWED_HOSTS = [
@@ -49,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'authentication_app.apps.AuthenticationAppConfig',
-    # 'authentication_app',
     'rest_framework'
 ]
 
@@ -87,21 +89,28 @@ WSGI_APPLICATION = 'webletter.wsgi.application'
 
 
 # Mongodb database connect
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('POSTGRES_DATABASE'),
-        'USER' : env('POSTGRES_NAME'),
-        'PASSWORD' : env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST'),
-        'PORT' : env('POSTGRES_PORT')
-
-        # 'OPTIONS': {
-        #     'service': 'webletter',
-        #     'passfile': '.my_pgpass',
-        # },
+if DEBUG :
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': env('POSTGRES_DATABASE'),
+            'USER' : env('POSTGRES_NAME'),
+            'PASSWORD' : env('POSTGRES_PASSWORD'),
+            'HOST': env('POSTGRES_HOST'),
+            'PORT' : env('POSTGRES_PORT')
+        }
     }
-}
+
+else :
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': env('POSTGRES_DATABASE'),
+            'USER' : env('POSTGRES_NAME'),
+            'PASSWORD' : env('POSTGRES_PASSWORD'),
+            'HOST': env('POSTGRES_HOST'),
+        }
+    }
 
 
 # Password validation
