@@ -7,7 +7,8 @@ from django.contrib.auth import authenticate
 from .serializers import UserSerializer
 import jwt
 import json
-import environ   # importing django-environ to read env files
+import environ    # importing django-environ to read env files
+from webletter.settings import DEBUG
 
 
 # Initialise environment variables
@@ -33,12 +34,10 @@ def registerUser(request):
         user.save()
         encoded_jwt = jwt.encode({
             "username": user.data['username'],
-            "password": user.data['password'],
-            "email": user.data['password']
-        }, env('ACCESS_TOKEN'))
+        }, env('ACCESS_TOKEN'), algorithm='HS256')
 
-        response = Response({'message': 'User has been successfully created'})
-        response.set_cookie(key="token", value=encoded_jwt, max_age=60*60*24, httponly=True)
+        response = Response({'message': 'User has been successfully created'}, status=200)
+        response.set_cookie(key="token", value=encoded_jwt, max_age=60*60*24, httponly=True, secure=not(DEBUG))
         return response
 
     else:
