@@ -52,7 +52,6 @@ def loginUser(request):
         password = data['password']
     )
 
-    print(user)
     if user == None:
         return Response({'message' : 'Check the login credentials and try again'}, 400)
 
