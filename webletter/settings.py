@@ -37,7 +37,28 @@ print(f"Debugging is {DEBUG}")
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     'webletter.herokuapp.com'
+]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'origin',
+    'user-agent',
+    'x-requested-with',
 ]
 
 
@@ -52,13 +73,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'authentication_app.apps.AuthenticationAppConfig',
-    'rest_framework'
+    'rest_framework',
+    'corsheaders',
+
+
 ]
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
