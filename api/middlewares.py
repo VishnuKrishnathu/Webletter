@@ -16,12 +16,13 @@ def jwtCheck(func):
             user_data = jwt.decode(token, env('ACCESS_TOKEN'), algorithms ='HS256')
 
             if user_data:
+                request.user = user_data
                 return func(request)
             else:
-                return Response({'message' : 'Token expired'}, 401)
+                return Response({'message' : 'Token expired'}, 403)
 
         except KeyError:
 
-            return Response({'message': 'Try loggin in again'}, 403)
+            return Response({'message': ''}, 403)
 
     return validator

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.contrib.auth.models import UserManager
 
 # Create your models here.
 class CustomUser(AbstractBaseUser):
@@ -21,6 +22,8 @@ class CustomUser(AbstractBaseUser):
     )
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
 
+    objects = UserManager()
+
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'email', 'full_name', 'password']
+    REQUIRED_FIELDS = ['email', 'full_name', 'password']

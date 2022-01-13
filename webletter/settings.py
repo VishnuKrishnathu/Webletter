@@ -55,12 +55,13 @@ CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
     'authorization',
-    'content-type',
+    'Content-Type',
     'origin',
     'user-agent',
     'x-requested-with',
 ]
 
+CORS_ALLOW_CREDENTIALS = True  ##allows the application to send cookies
 
 # Application definition
 
@@ -78,6 +79,12 @@ INSTALLED_APPS = [
 
 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}
 
 
 MIDDLEWARE = [
@@ -159,6 +166,10 @@ AUTH_PASSWORD_VALIDATORS = [
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
+
+# authorization of customusers
+# https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#extending-user
+AUTH_USER_MODEL = 'authentication_app.CustomUser'
 
 
 # Internationalization

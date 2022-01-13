@@ -4,8 +4,8 @@ from .middlewares import jwtCheck
 
 # Create your views here.
 
-# @jwtCheck
 @api_view(['GET'])
+@jwtCheck
 def getBlogs(request):
 
     return Response({
