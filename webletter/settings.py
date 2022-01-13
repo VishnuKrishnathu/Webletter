@@ -37,9 +37,31 @@ print(f"Debugging is {DEBUG}")
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     'webletter.herokuapp.com'
 ]
 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'Content-Type',
+    'origin',
+    'user-agent',
+    'x-requested-with',
+]
+
+CORS_ALLOW_CREDENTIALS = True  ##allows the application to send cookies
 
 # Application definition
 
@@ -52,13 +74,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'authentication_app.apps.AuthenticationAppConfig',
-    'rest_framework'
+    'rest_framework',
+    'corsheaders',
+
+
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -134,6 +166,10 @@ AUTH_PASSWORD_VALIDATORS = [
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
+
+# authorization of customusers
+# https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#extending-user
+AUTH_USER_MODEL = 'authentication_app.CustomUser'
 
 
 # Internationalization
