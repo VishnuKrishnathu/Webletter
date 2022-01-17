@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    path('getBlogs', views.getBlogs)
+    path('get-blogs', views.get_blogs)
 ]
