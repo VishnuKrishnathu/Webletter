@@ -1,14 +1,13 @@
 # Create your views here.
-from django.db import reset_queries
+from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, parser_classes
-from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view, parser_classes, authentication_classes
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from .serializers import UserSerializer
-import jwt
-import environ    # importing django-environ to read env files
+import environ # importing django-environ to read env files
 from webletter.settings import DEBUG
-
 
 # Initialise environment variables
 env = environ.Env()
@@ -17,50 +16,32 @@ environ.Env.read_env()
 
 @api_view(['POST'])
 @parser_classes([JSONParser])
-def registerUser(request):
-    user = UserSerializer(data = request.data)
-    if(user.is_valid()):
+@authentication_classes([])
+def register_user(request):
+    user = UserSerializer(data=request.data)
+    if user.is_valid():
         user.save()
-        encoded_jwt = jwt.encode({
-            "username": user.data['username'],
-        }, env('ACCESS_TOKEN'), algorithm='HS256')
-
-        response = Response({'message': 'User has been successfully created'}, status=200)
-        response.set_cookie(key="token", value=encoded_jwt, max_age=60*60*24, httponly=True, secure=not(DEBUG))
+        response = Response({'message': 'User has been successfully created'}, status=status.HTTP_200_OK)
         return response
 
     else:
         print(user.errors)
-        return Response({'message' : 'error saving user informaton. Try again'}, 400)
+        return Response({'message':'error saving user information. Try again'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
-@api_view(['POST'])
-@parser_classes([JSONParser])
-def loginUser(request):
-    data = request.data
-    user = authenticate(
-        username = data['username'],
-        password = data['password']
-    )
-    print(user)
-    try:
-        token = request.COOKIES['token']
-        print(token)
-        user_data = jwt.decode(token, env('ACCESS_TOKEN'), algorithms ='HS256')
+class LoginUser(TokenObtainPairView):
+    """
+    * A custom login is created to send cookies as response
+    https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
+    """
+    authentication_classes = ()
 
-        if (user_data["username"] != data["username"]):
-            if (user == None):
-                return Response({'message' : 'Check the login credentials and try again'}, 400)
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
 
-            else:
-                return Response({'message' : 'User is now successfully logged in'}, 200)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
 
-    except KeyError:
-        encoded_jwt = jwt.encode({
-            "username": data['username'],
-        }, env('ACCESS_TOKEN'), algorithm='HS256')
-
-        response = Response({'message' : 'User is now successfully logged in'}, 200)
-        response.set_cookie(key="token", value=encoded_jwt, max_age=60*60*24, httponly=True, secure=not(DEBUG))
-
-        return response
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
