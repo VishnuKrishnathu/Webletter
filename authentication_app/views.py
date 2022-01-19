@@ -1,13 +1,14 @@
 # Create your views here.
 from rest_framework import status
+from django.contrib.auth import authenticate
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework.views import APIView
+# from rest_framework_simplejwt.views import TokenRefreshView
 from .serializers import UserSerializer
+from .models import CustomUser
 import environ # importing django-environ to read env files
-from webletter.settings import DEBUG
 
 # Initialise environment variables
 env = environ.Env()
@@ -29,15 +30,49 @@ def register_user(request):
         return Response({'message':'error saving user information. Try again'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
-class LoginUser(TokenObtainPairView):
+class LoginUser(APIView):
     """
-    * A custom login is created to send cookies as response
-    https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
+    * Session based login is being implemented
+    https://docs.djangoproject.com/en/4.0/topics/http/sessions/
     """
-    authentication_classes = ()
+    def post(self, request, *args, **kwargs):
+        username = request.data["username"]
+        password = request.data["password"]
+        user = CustomUser.objects.get(username=username)
+        if authenticate(username=user.username, password=password):
+            request.session["user_id"] = user.id
+            response = Response({
+                "access": "random data"
+            }, status=status.HTTP_200_OK)
+            return response
+        else:
+            return Response({"message": "wrong user credentials has been provided"}, 401)
 
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
+
+class LogoutUser(APIView):
+    # logout functionality implemented
+    # https://docs.djangoproject.com/en/4.0/topics/http/sessions/
+    def get(self, request, *args, **kwargs):
+        try:
+            del request.session["user_id"]
+
+        except KeyError:
+            pass
+        return Response({"message": "User is now successfully logged out"}, 200)
+
+
+class GetUserInfo(APIView):
+    def get(self, request):
+        try:
+            return Response({"id": request.session["user_id"]}, 200)
+        except KeyError:
+            return Response({"message" : "User is unauthorized"}, 403)
+
+
+"""
+class RefreshToken(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data={"refresh": request.COOKIES["token"]})
 
         try:
             serializer.is_valid(raise_exception=True)
@@ -45,3 +80,4 @@ class LoginUser(TokenObtainPairView):
             raise InvalidToken(e.args[0])
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+"""

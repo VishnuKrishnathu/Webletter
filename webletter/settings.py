@@ -82,10 +82,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
-    )
+    ]
 }
 
 
@@ -135,13 +132,13 @@ if DEBUG :
         }
     }
 
-else :
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': env('POSTGRES_DATABASE'),
-            'USER' : env('POSTGRES_NAME'),
-            'PASSWORD' : env('POSTGRES_PASSWORD'),
+            'USER': env('POSTGRES_NAME'),
+            'PASSWORD': env('POSTGRES_PASSWORD'),
             'HOST': env('POSTGRES_HOST'),
         }
     }
@@ -196,7 +193,22 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# simple JWT settings
 SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'USER_ID_FIELD': 'id'
 }
+
+# caching the database for the session
+SESSION_CACHE_ALIAS = 'default'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+    }
+}
+
+SESSION_COOKIE_AGE = 24*60*60
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_COOKIE_NAME = 'session'

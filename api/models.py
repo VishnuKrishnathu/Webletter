@@ -2,6 +2,7 @@
 from django.db import models
 from authentication_app.models import CustomUser
 
+
 class Blogs(models.Model):
     tag = models.CharField(
         max_length=15,
