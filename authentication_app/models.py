@@ -21,6 +21,8 @@ class CustomUser(AbstractBaseUser):
         max_length=50
     )
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    is_staff = models.BooleanField(default=False, null=True)
+    is_superuser = models.BooleanField(default=False, null=True)
 
     objects = UserManager()
 

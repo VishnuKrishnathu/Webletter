@@ -1,6 +1,7 @@
 from django.test import TestCase, RequestFactory, Client
 from authentication_app import views
 from django.urls import reverse
+from rest_framework.test import APIClient
 
 # Create your tests here.
 class AuthRegisterTestinng(TestCase):
