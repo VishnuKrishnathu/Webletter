@@ -49,3 +49,6 @@ jobs:
         heroku_app_name: 'webletter'
         heroku_email: ${{ secrets.HEROKU_EMAIL }}
         usedocker: true
+
+    - name: Directory Tree
+      run: tree -a
