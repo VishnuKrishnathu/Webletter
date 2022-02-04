@@ -25,15 +25,15 @@ jobs:
     - name: Setting up environment variables
       run: |
         touch webletter/.env
-        echo 'SECRET_KEY= $SECRET_KEY
-        POSTGRES_NAME= $POSTGRES_NAME
-        POSTGRES_PASSWORD= $POSTGRES_PASSWORD
-        POSTGRES_DATABASE= $POSTGRES_DATABASE
-        POSTGRES_HOST= $POSTGRES_HOST
+        echo 'SECRET_KEY=$SECRET_KEY
+        POSTGRES_NAME=$POSTGRES_NAME
+        POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+        POSTGRES_DATABASE=$POSTGRES_DATABASE
+        POSTGRES_HOST=$POSTGRES_HOST
         DEBUG=False' > webletter/.env
         touch authentication_app/.env
-        echo 'ACCESS_TOKEN = $ACCESS_TOKEN
-        REFRESH_TOKEN= $REFRESH_TOKEN' > authentication_app/.env
+        echo 'ACCESS_TOKEN =$ACCESS_TOKEN
+        REFRESH_TOKEN=$REFRESH_TOKEN' > authentication_app/.env
       env:
         POSTGRES_NAME : ${{ secrets.POSTGRES_NAME }}
         POSTGRES_PASSWORD : ${{ secrets.POSTGRES_PASSWORD }}
