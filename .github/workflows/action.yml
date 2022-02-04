@@ -43,6 +43,9 @@ jobs:
         ACCESS_TOKEN : ${{ secrets.ACCESS_TOKEN }}
         REFRESH_TOKEN : ${{ secrets.REFRESH_TOKEN }}
 
+    - name: Output the env files
+      run: cat webletter/.env
+
     - uses: akhileshns/heroku-deploy@v3.12.12
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
