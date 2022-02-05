@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer
 from .models import CustomUser
 import environ # importing django-environ to read env files
+from django.middleware.csrf import get_token
 
 # Initialise environment variables
 env = environ.Env()
@@ -81,3 +82,9 @@ class RefreshToken(TokenRefreshView):
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 """
+
+
+class GetCSRFToken(APIView):
+    def get(self, request):
+        print(get_token(request))
+        return Response({"message": "Token set"}, 200)

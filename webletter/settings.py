@@ -32,9 +32,6 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG') == 'True'
 
-print(f"Debugging is {DEBUG}")
-# enforce_schema = True
-
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -44,6 +41,7 @@ ALLOWED_HOSTS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://webletter-frontend.vercel.app"
 ]
 
 CORS_ALLOW_METHODS = [
@@ -61,7 +59,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-CORS_ALLOW_CREDENTIALS = True  ##allows the application to send cookies
+CORS_ALLOW_CREDENTIALS = True  # allows the application to send cookies
 
 # Application definition
 
@@ -212,3 +210,8 @@ SESSION_COOKIE_AGE = 24*60*60
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_NAME = 'session'
+
+# csrf settings for django
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_DOMAIN = "localhost" if DEBUG else "webletter-frontend.vercel.app"
+print(f"cookie domain set to {CSRF_COOKIE_DOMAIN}")
