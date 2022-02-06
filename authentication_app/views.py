@@ -5,7 +5,6 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.views import APIView
-# from rest_framework_simplejwt.views import TokenRefreshView
 from .serializers import UserSerializer
 from .models import CustomUser
 import environ # importing django-environ to read env files
@@ -42,6 +41,7 @@ class LoginUser(APIView):
         user = CustomUser.objects.get(username=username)
         if authenticate(username=user.username, password=password):
             request.session["user_id"] = user.id
+            print(request.session)
             response = Response({
                 "access": "random data"
             }, status=status.HTTP_200_OK)
@@ -68,20 +68,6 @@ class GetUserInfo(APIView):
             return Response({"id": request.session["user_id"]}, 200)
         except KeyError:
             return Response({"message" : "User is unauthorized"}, 403)
-
-
-"""
-class RefreshToken(TokenRefreshView):
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data={"refresh": request.COOKIES["token"]})
-
-        try:
-            serializer.is_valid(raise_exception=True)
-        except TokenError as e:
-            raise InvalidToken(e.args[0])
-
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
-"""
 
 
 class GetCSRFToken(APIView):

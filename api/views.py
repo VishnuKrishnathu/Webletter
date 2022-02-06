@@ -1,17 +1,27 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
+from .models import Blogs
 
 # Create your views here.
 
 
-@api_view(['GET'])
-def get_blogs(request):
-    return Response({
-        "message": "Hello World"
-    }, 200)
+class HandleBlog(APIView):
+    def get(self, request):
+        return Response({
+            "message": "Hello World"
+        }, 200)
 
-
-class Blogs(APIView):
     def post(self, request):
-        pass
+        print(request.user)
+        blog = Blogs(
+            title=request.data["title"],
+            summary=request.data["summary"],
+            article=request.data["article"]
+        )
+        blog.user = request.user
+        blog.save()
+
+        return Response({
+            "message": "data successfuly stored"
+        }, 200)
