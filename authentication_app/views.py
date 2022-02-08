@@ -1,6 +1,8 @@
 # Create your views here.
+import logging
+
 from rest_framework import status
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
@@ -39,9 +41,10 @@ class LoginUser(APIView):
         username = request.data["username"]
         password = request.data["password"]
         user = CustomUser.objects.get(username=username)
-        if authenticate(username=user.username, password=password):
-            request.session["user_id"] = user.id
-            print(request.session)
+        user_logged = authenticate(username=user.username, password=password)
+        if user_logged:
+            request.session["username"] = user.username
+            login(request, user_logged)
             response = Response({
                 "access": "random data"
             }, status=status.HTTP_200_OK)
@@ -55,7 +58,8 @@ class LogoutUser(APIView):
     # https://docs.djangoproject.com/en/4.0/topics/http/sessions/
     def get(self, request, *args, **kwargs):
         try:
-            del request.session["user_id"]
+            logout(request)
+            del request.session["username"]
 
         except KeyError:
             pass
@@ -65,12 +69,13 @@ class LogoutUser(APIView):
 class GetUserInfo(APIView):
     def get(self, request):
         try:
-            return Response({"id": request.session["user_id"]}, 200)
+            return Response({"id": request.session["username"]}, 200)
         except KeyError:
-            return Response({"message" : "User is unauthorized"}, 403)
+            return Response({"message": "User is unauthorized"}, 403)
 
 
 class GetCSRFToken(APIView):
     def get(self, request):
-        print(get_token(request))
-        return Response({"message": "Token set"}, 200)
+        get_token(request)
+        response = Response({"message": "Token set"}, 200)
+        return response

@@ -1,3 +1,4 @@
 webletter/.env
 authentication_app/.env
 .idea
+venv

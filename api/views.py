@@ -1,5 +1,4 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from .models import Blogs
 
@@ -13,7 +12,6 @@ class HandleBlog(APIView):
         }, 200)
 
     def post(self, request):
-        print(request.user)
         blog = Blogs(
             title=request.data["title"],
             summary=request.data["summary"],

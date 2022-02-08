@@ -57,6 +57,7 @@ CORS_ALLOW_HEADERS = [
     'origin',
     'user-agent',
     'x-requested-with',
+    'X-CSRFToken'
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # allows the application to send cookies
@@ -212,6 +213,9 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_NAME = 'session'
 
 # csrf settings for django
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_DOMAIN = "localhost" if DEBUG else "webletter-frontend.vercel.app"
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000'
+]
 print(f"cookie domain set to {CSRF_COOKIE_DOMAIN}")
